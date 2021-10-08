@@ -32,6 +32,15 @@ int main(int, char**)
 			framebuffer->DrawPoint(rand() % framebuffer->width, rand() % framebuffer->height, { 255, 255, 255, 255 });
 		}
 
+		for (int i = 0; i < 5; i++)
+		{
+			framebuffer->DrawRect(rand() % framebuffer->width, rand() % framebuffer->height, 25, 25, { 0, 255, 0, 255 });
+		}
+
+		for (int i = 0; i < 10; i++)
+		{
+			framebuffer->DrawLine(framebuffer->width / 2, framebuffer->height / 2, rand() % framebuffer->width, rand() % framebuffer->height, { 255, 0, 255, 255 });
+		}
 
 		framebuffer->Update();
 
