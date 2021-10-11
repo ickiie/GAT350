@@ -27,7 +27,7 @@ int main(int, char**)
 		}
 
 		framebuffer->Clear({0, 0, 0, 0});
-		for (int i = 0; i < 100; i++) {
+		/*for (int i = 0; i < 100; i++) {
 
 			framebuffer->DrawPoint(rand() % framebuffer->width, rand() % framebuffer->height, { 255, 255, 255, 255 });
 		}
@@ -40,7 +40,10 @@ int main(int, char**)
 		for (int i = 0; i < 10; i++)
 		{
 			framebuffer->DrawLine(framebuffer->width / 2, framebuffer->height / 2, rand() % framebuffer->width, rand() % framebuffer->height, { 255, 0, 255, 255 });
-		}
+		}*/
+
+		framebuffer->DrawSimpleCurve(200, 200, 300, 100, 5, { 255, 255, 255, 255 });
+		framebuffer->DrawQuadraticCurve(200, 200, 300, 100, 400, 200, 35, { 255, 255, 0, 255 });
 
 		framebuffer->Update();
 
