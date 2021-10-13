@@ -42,8 +42,43 @@ int main(int, char**)
 			framebuffer->DrawLine(framebuffer->width / 2, framebuffer->height / 2, rand() % framebuffer->width, rand() % framebuffer->height, { 255, 0, 255, 255 });
 		}*/
 
-		framebuffer->DrawSimpleCurve(200, 200, 300, 100, 5, { 255, 255, 255, 255 });
+		//My tests
+		/*framebuffer->DrawSimpleCurve(200, 200, 300, 100, 5, { 255, 255, 255, 255 });
 		framebuffer->DrawQuadraticCurve(200, 200, 300, 100, 400, 200, 35, { 255, 255, 0, 255 });
+		framebuffer->DrawCubicCurve(200, 200, 300, 100, 400, 200, 300, 200, 35, {255, 0, 255, 255});
+		framebuffer->DrawCircle(400, 400, 50, { 0, 255, 255, 255 });*/
+
+		for (int i = 0; i < 100; i++)
+		{
+			framebuffer->DrawPoint(rand() % framebuffer->width, rand() % framebuffer->height, { 0, 255, 0, 0 });
+		}
+		for (int i = 0; i < 20; i++)
+		{
+			framebuffer->DrawRect(rand() % framebuffer->width, rand() % framebuffer->height, 20, 20, { 0, 0, 255, 0 });
+		}
+		for (int i = 0; i < 20; i++)
+		{
+			framebuffer->DrawLine(framebuffer->width >> 1, framebuffer->height >> 1, rand() % framebuffer->width, rand() % framebuffer->height, { 255, 255, 255, 0 });
+		}
+
+
+
+		for (int i = 0; i < 10; i++)
+		{
+			framebuffer->DrawQuadraticCurve(
+				rand() % framebuffer->width, rand() % framebuffer->height,
+				rand() % framebuffer->width, rand() % framebuffer->height,
+				rand() % framebuffer->width, rand() % framebuffer->height, 30, { 255, 255, 0, 255 });
+		}
+		for (int i = 0; i < 10; i++)
+		{
+			framebuffer->DrawCubicCurve(
+				rand() % framebuffer->width, rand() % framebuffer->height,
+				rand() % framebuffer->width, rand() % framebuffer->height,
+				rand() % framebuffer->width, rand() % framebuffer->height,
+				rand() % framebuffer->width, rand() % framebuffer->height,
+				30, { 0, 255, 255, 255 });
+		}
 
 		framebuffer->Update();
 
