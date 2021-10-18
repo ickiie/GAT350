@@ -1,10 +1,14 @@
 #pragma once
 #include "Renderer.h"
+#include "Image.h"
+#include "ColorBuffer.h"
 #include <vector>
 
 class Framebuffer
 {
 public:
+
+
 	Framebuffer(Renderer* renderer, int width, int height);
 	~Framebuffer();
 
@@ -23,6 +27,8 @@ public:
 	void DrawCubicCurve(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int steps, const color_t& color);
 
 	int Lerp(int a, int b, float t);
+
+	void DrawImage(int x1, int y2, class Image* image);
 
 public:
 	SDL_Texture* texture{ nullptr };

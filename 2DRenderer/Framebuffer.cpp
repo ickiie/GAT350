@@ -234,9 +234,32 @@ int Framebuffer::Lerp(int a, int b, float t) {
     return (int)(a + ((b - a) * t));
 }
 
+void Framebuffer::DrawImage(int x1, int y2, Image* image)
+{
+    for (int y = 0; y < image->height; y++)
+    {
+        int sy = y2 + y;
+        for (int x = 0; x < image->width; x++)
+        {
+            int sx = x1 + x;
+            if (sx <= 800 && sx >= 0 && sy <= 600 && sy >= 0) continue;
+
+            ((color_t*)buffer)[sx + (sy * width)] = ((color_t*)image->buffer)[x + (y * image->width)];
+        }
+    }
+
+}
+
 void Framebuffer::DrawCircleOctants(int cx, int cy, int x, int y, const color_t& color)
 {
-    DrawPoint(cx + x, cy + y, color);
+    DrawLine(cx - x, cy + y, cx + x, cy + y, color);
+    DrawLine(cx - x, cy - y, cx + x, cy - y, color);
+   
+    DrawLine(cx - y, cy + x, cx + y, cy + x, color);
+    DrawLine(cx - y, cy - x, cx + y, cy - x, color);
+
+
+   /* DrawPoint(cx + x, cy + y, color);
     DrawPoint(cx + x, cy - y, color);
     DrawPoint(cx - x, cy + y, color);
     DrawPoint(cx - x, cy - y, color);
@@ -244,7 +267,7 @@ void Framebuffer::DrawCircleOctants(int cx, int cy, int x, int y, const color_t&
     DrawPoint(cx + y, cy + x, color);
     DrawPoint(cx + y, cy - x, color);
     DrawPoint(cx - y, cy + x, color);
-    DrawPoint(cx - y, cy - x, color);
+    DrawPoint(cx - y, cy - x, color);*/
 }
 
 
