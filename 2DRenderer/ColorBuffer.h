@@ -10,8 +10,6 @@ struct ColorBuffer
         width = other.width;
         height = other.height;
 
-
-
         if (other.data)
         {
             data = new uint8_t[width * height * sizeof(color_t)];

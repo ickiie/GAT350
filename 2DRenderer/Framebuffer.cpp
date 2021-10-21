@@ -6,41 +6,48 @@
 
 Framebuffer::Framebuffer(Renderer* renderer, int width, int height)
 {
-    this->width = width;
-    this->height = height;
+    colorBuffer.width = width;
+    colorBuffer.height = height;
 
     texture = SDL_CreateTexture(renderer->renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, width, height);
 
-    pitch = width * sizeof(color_t);
-    buffer = new uint8_t[pitch * height];
+    colorBuffer.pitch = colorBuffer.width * sizeof(color_t);
+    colorBuffer.data = new uint8_t[colorBuffer.pitch * colorBuffer.height];
 }
 
 Framebuffer::~Framebuffer()
 {
     SDL_DestroyTexture(texture);
-    delete[] buffer;
 }
 
 void Framebuffer::Update() {
 
-    SDL_UpdateTexture(texture, nullptr, buffer, pitch);
+    SDL_UpdateTexture(texture, nullptr, colorBuffer.data, colorBuffer.pitch);
 }
 
 void Framebuffer::Clear(const color_t& color) {
 
-    for (int i = 0; i < width * height; i++) {
+    for (int i = 0; i < colorBuffer.width * colorBuffer.height; i++) {
 
-        ((color_t*)(buffer))[i] = color;
+        ((color_t*)(colorBuffer.data))[i] = color;
 
     }
 }
 
 void Framebuffer::DrawPoint(int x, int y, const color_t& color) {
 
-    if (x < 0 || x >= width || y < 0 || y >= height) return;
+    if (x < 0 || x >= colorBuffer.width || y < 0 || y >= colorBuffer.height) return;
 
-    ((color_t*)(buffer))[x + y * width] = color;
+    //((color_t*)(colorBuffer.data))[x + y * colorBuffer.width] = color;
 
+    uint8_t alpha = color.a;
+    uint8_t invAlpha = 255 - alpha; // 1(255) - alpha
+
+    color_t& destColor = ((color_t*)(colorBuffer.data))[x + y * colorBuffer.width];
+
+    destColor.r = ((color.r * alpha) + (destColor.r * invAlpha)) >> 8;
+    destColor.g = ((color.g * alpha) + (destColor.g * invAlpha)) >> 8;
+    destColor.b = ((color.b * alpha) + (destColor.b * invAlpha)) >> 8;
 }
 
 void Framebuffer::DrawRect(int x, int y, int rect_width, int rect_height, const color_t& color) {
@@ -186,15 +193,15 @@ void Framebuffer::DrawQuadraticCurve(int x1, int y1, int x2, int y2, int x3, int
         float b = 2.0f * (1.0f - t1) * t1;
         float c = (float)pow(t1, 2.0f);
 
-        int sx = a * x1 + b * x2 + c * x3;
-        int sy = a * y1 + b * y2 + c * y3;
+        int sx = (int)(a * x1 + b * x2 + c * x3);
+        int sy = (int)(a * y1 + b * y2 + c * y3);
 
         float a2 = (float)pow((1.0f - t2), 2.0f);
         float b2 = 2.0f * (1.0f - t2) * t2;
         float c2 = (float)pow(t2, 2.0f);
 
-        int sx2 = a2 * x1 + b2 * x2 + c2 * x3;
-        int sy2 = a2 * y1 + b2 * y2 + c2 * y3;
+        int sx2 = (int)(a2 * x1 + b2 * x2 + c2 * x3);
+        int sy2 = (int)(a2 * y1 + b2 * y2 + c2 * y3);
 
         //DrawPoint(sx, sy, color);
         DrawLine(sx, sy, sx2, sy2, color);
@@ -236,15 +243,17 @@ int Framebuffer::Lerp(int a, int b, float t) {
 
 void Framebuffer::DrawImage(int x1, int y2, Image* image)
 {
-    for (int y = 0; y < image->height; y++)
+    for (int y = 0; y < image->colorBuffer.height; y++)
     {
         int sy = y2 + y;
-        for (int x = 0; x < image->width; x++)
+        for (int x = 0; x < image->colorBuffer.width; x++)
         {
             int sx = x1 + x;
-            if (sx <= 800 && sx >= 0 && sy <= 600 && sy >= 0) continue;
+            if (sx < 0 || sx >= colorBuffer.width || sy < 0 || sy >= colorBuffer.height) continue;
 
-            ((color_t*)buffer)[sx + (sy * width)] = ((color_t*)image->buffer)[x + (y * image->width)];
+            color_t color = ((color_t*)image->colorBuffer.data)[x + (y * image->colorBuffer.width)];
+            DrawPoint(sx, sy, color);
+            //((color_t*)colorBuffer.data)[sx + (sy * colorBuffer.width)] = ((color_t*)image->colorBuffer.data)[x + (y * image->colorBuffer.width)];
         }
     }
 

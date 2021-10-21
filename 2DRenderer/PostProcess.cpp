@@ -24,9 +24,9 @@ namespace PostProcess
             uint16_t sum = color.r + color.b + color.g;
             uint16_t average = sum / 3;
 
-            color.r = average;
-            color.g = average;
-            color.b = average;
+            color.r = (Uint8)average;
+            color.g = (Uint8)average;
+            color.b = (Uint8)average;
         }
     }
 
@@ -92,6 +92,7 @@ namespace PostProcess
             color.b = (color.b >= threshold) ? color.b : 0;
         }
     }
+
 
     void BoxBlur(const ColorBuffer& colorBuffer)
     {
@@ -208,6 +209,51 @@ namespace PostProcess
         }
     }
 
+    void Edge(const ColorBuffer& colorBuffer, uint8_t threshold)
+    {
+        ColorBuffer source = colorBuffer;
 
+        int16_t kh[3][3] =
+        {
+            { 1, 0, -1 },
+            { 2, 0, -2 },
+            { 1, 0, -1 },
+        };
+
+        int16_t kv[3][3] =
+        {
+            { -1, -2, -1 },
+            {  0,  0,  0 },
+            {  1,  2,  1 },
+        };
+
+        for (int i = 0; i < colorBuffer.width * colorBuffer.height; i++) {
+
+            int x = i % source.width;
+            int y = i / source.width;
+
+            int16_t h = 0;
+            int16_t v = 0;
+            for (int iy = -1; iy <= 1; iy++)
+            {
+                for (int ix = -1; ix <= 1; ix++)
+                {
+                    h += ((color_t*)source.data)[(x + ix) + (y + iy) * source.width].r * kh[1 + iy][1 + ix];
+                    v += ((color_t*)source.data)[(x + ix) + (y + iy) * source.width].r * kv[1 + iy][1 + ix];
+                }
+            }
+
+            uint16_t result = (uint16_t)sqrt((h * h) + (v * v));
+            result = (result > threshold) ? result : 0;
+            uint8_t c = (result < 0) ? 0 : ((result > 255) ? 255 : result);
+
+            color_t& color = ((color_t*)colorBuffer.data)[i];
+            color.r = c;
+            color.g = c;
+            color.b = c;
+
+        }
+    }
+   
 
 }

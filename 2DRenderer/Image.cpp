@@ -37,13 +37,13 @@ bool Image::Load(const std::string& filename, uint8_t alpha)
     uint16_t bitsPerPixel = *((uint16_t*)(&header[28]));
     uint16_t bytesPerPixel = bitsPerPixel / 8;
 
-    size_t size = width * height * bytesPerPixel;
+    size_t size = colorBuffer.width * colorBuffer.height * bytesPerPixel;
 
     uint8_t* data = new uint8_t[size];
 
     stream.read((char*)data, size);
 
-    for (int i = 0; i < width * height; i++)
+    for (int i = 0; i < colorBuffer.width * colorBuffer.height; i++)
     {
         color_t color;
 
@@ -54,7 +54,7 @@ bool Image::Load(const std::string& filename, uint8_t alpha)
         color.r = data[index + 2];
         color.a = alpha;
 
-        ((color_t*)(buffer))[i] = color;
+        ((color_t*)(colorBuffer.data))[i] = color;
     }
 
     stream.close();
@@ -65,16 +65,13 @@ bool Image::Load(const std::string& filename, uint8_t alpha)
 
 void Image::Flip()
 {
-    // set the pitch (width * number of bytes per pixel)
-    colorBuffer.pitch = width * sizeof(color_t);
-
     // create temporary line to store data
     uint8_t* temp = new uint8_t[colorBuffer.pitch];
 
-    for (int i = 0; i < height / 2; i++)
+    for (int i = 0; i < colorBuffer.height / 2; i++)
     {
-        uint8_t* line1 = &((buffer)[i * colorBuffer.pitch]);
-        uint8_t* line2 = &((buffer)[((height - 1) - i) * colorBuffer.pitch]);
+        uint8_t* line1 = &((colorBuffer.data)[i * colorBuffer.pitch]);
+        uint8_t* line2 = &((colorBuffer.data)[((colorBuffer.height - 1) - i) * colorBuffer.pitch]);
         memcpy(temp, line1, colorBuffer.pitch);
         memcpy(line1, line2, colorBuffer.pitch);
         memcpy(line2, temp, colorBuffer.pitch);
@@ -82,10 +79,3 @@ void Image::Flip()
     delete[] temp;
 }
 
-
-Image::~Image() {
-
-    delete[] buffer;
-
-
-}

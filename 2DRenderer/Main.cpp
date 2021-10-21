@@ -2,6 +2,7 @@
 #include "Framebuffer.h"
 #include "Image.h"
 #include "PostProcess.h"
+#include "ColorBuffer.h"
 
 #include <iostream>
 #include <SDL.h>
@@ -17,7 +18,7 @@ int main(int, char**)
 	std::unique_ptr<Framebuffer> framebuffer = std::make_unique<Framebuffer>(renderer.get(), renderer->width, renderer->height);
 
 	std::unique_ptr<Image> image = std::make_unique<Image>();
-	image->Load("../resources/flower.bmp");
+	image->Load("../resources/sus.bmp", 255);
 	image->Flip();
 
 	bool quit = false;
@@ -37,12 +38,12 @@ int main(int, char**)
 
 			framebuffer->DrawPoint(rand() % framebuffer->width, rand() % framebuffer->height, { 255, 255, 255, 255 });
 		}
-
-		for (int i = 0; i < 5; i++)
+		*/
+		for (int i = 0; i < 15; i++)
 		{
-			framebuffer->DrawRect(rand() % framebuffer->width, rand() % framebuffer->height, 25, 25, { 0, 255, 0, 255 });
+			framebuffer->DrawRect(rand() % framebuffer->colorBuffer.width, rand() % framebuffer->colorBuffer.height, 50, 50, { (uint8_t)((rand() % 2) * 255), (uint8_t)((rand() % 2) * 255), (uint8_t)((rand() % 2) * 255), (uint8_t)(rand() % 255) });
 		}
-
+		/*
 		for (int i = 0; i < 10; i++)
 		{
 			framebuffer->DrawLine(framebuffer->width / 2, framebuffer->height / 2, rand() % framebuffer->width, rand() % framebuffer->height, { 255, 0, 255, 255 });
@@ -102,6 +103,15 @@ int main(int, char**)
 		std::unique_ptr<Image> image3 = std::make_unique<Image>(*image.get());
 		PostProcess::Sharpen(image3->colorBuffer);
 		framebuffer->DrawImage(400, 300, image3.get());
+
+		std::unique_ptr<Image> image4 = std::make_unique<Image>(*image.get());
+		PostProcess::Monochrome(image4->colorBuffer);
+		PostProcess::Edge(image4->colorBuffer, 0);
+		framebuffer->DrawImage(600, 300, image4.get());
+
+
+		//PostProcess::Invert(framebuffer->colorBuffer);
+		//PostProcess::Noise(framebuffer->colorBuffer, 25);
 
 		framebuffer->Update();
 
