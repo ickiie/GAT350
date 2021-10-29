@@ -10,6 +10,6 @@ public:
 	void Trace(const ColorBuffer& colorBuffer, Scene* scene);
 
 public:
-	int samples = 10;
+	int samples = 3;
 
 };

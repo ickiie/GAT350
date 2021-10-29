@@ -14,8 +14,8 @@ void Tracer::Trace(const ColorBuffer& colorBuffer, Scene* scene) {
 			for (int sample = 0; sample < samples; sample++) {
 
 			glm::vec2 point;
-			point.x = x / (float)colorBuffer.width;
-			point.y = 1 - (y / (float)colorBuffer.height);
+			point.x = (x + random01()) / (float)colorBuffer.width;
+			point.y = 1 - ((y + random01()) / (float)colorBuffer.height);
 			//point.z = 0;
 
 			glm::vec3 direction = glm::vec3{ (point * 2.0f) - 1.0f, -1 };
