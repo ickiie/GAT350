@@ -45,6 +45,9 @@
     <ClCompile Include="Material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Sampler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framebuffer.h">
@@ -87,6 +90,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sampler.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
